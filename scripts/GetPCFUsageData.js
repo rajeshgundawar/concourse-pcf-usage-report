@@ -138,7 +138,6 @@ GetPCFUsageData.prototype.cfGetOrgSpaces = function(orgIndex,orgGuid) {
     if (! currentGetPCFUsageDataObject.execError("cfGetOrgSpaces",error,stderr)) {
       var parsedObject=JSON.parse(stdout, 'utf8');
       currentGetPCFUsageDataObject.orgsUsageObject.resources[orgIndex].spaces=parsedObject;
-      currentGetPCFUsageDataObject.cfGetOrgServicesUsage(orgIndex,orgGuid);
     } else {
       process.exit(1);
     }
