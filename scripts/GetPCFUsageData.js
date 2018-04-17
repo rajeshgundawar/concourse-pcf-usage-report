@@ -145,25 +145,6 @@ GetPCFUsageData.prototype.cfGetOrgSpaces = function(orgIndex,orgGuid) {
   });
 };
 
-GetPCFUsageData.prototype.cfGetOrgServicesUsage = function(orgIndex,orgGuid) {
-  console.log("Getting Services usage for the org")
-  var cf_cmd = 'curl "https://app-usage.'+process.env.PCF_APPS_DOMAIN+'/organizations/'+orgGuid+'/service_usages?start='+this.reportTimeRangeObject.USAGE_START_DATE+'&end='+this.reportTimeRangeObject.USAGE_END_DATE+'" -k -H "authorization: `cf oauth-token`"';
-  var currentGetPCFUsageDataObject = this;
-  exec(cf_cmd, function(error, stdout, stderr) {
-    if (! currentGetPCFUsageDataObject.execError("cfGetOrgServicesUsage",error,stderr)) {
-      var parsedObject=JSON.parse(stdout, 'utf8');
-      if (parsedObject.error) {
-        console.log("Error while issuing command ["+cf_cmd+"]:\n"+JSON.stringify(parsedObject, null, 2));
-        process.exit(1);
-      }
-      currentGetPCFUsageDataObject.mergeSpaceUsageInfo(parsedObject,currentGetPCFUsageDataObject.orgsUsageObject.resources[orgIndex].spaces);
-      currentGetPCFUsageDataObject.cfGetOrgApplicationsUsage(orgIndex,orgGuid);
-    } else {
-      process.exit(1);
-    }
-  });
-};
-
 GetPCFUsageData.prototype.mergeSpaceUsageInfo = function(servicesUsageObject,spacesDetailsObject) {
   for (var item in servicesUsageObject.service_usages) {
       var current_space_guid=servicesUsageObject.service_usages[item].space_guid;
